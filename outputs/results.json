@@ -1,0 +1,716 @@
+{
+  "settings": {
+    "N": 100000,
+    "seed": 42,
+    "p_mode": "0.6",
+    "w_opr": 0.4,
+    "w_saf": 0.6,
+    "p_m_primary": {
+      "P_OPR": 0.6,
+      "P_SAF": 0.6,
+      "L": 0.6,
+      "V": 0.6,
+      "A": 0.6,
+      "D": 0.6,
+      "E": 0.6
+    },
+    "p_m_empirical": {
+      "P_OPR": 1.0,
+      "P_SAF": 1.0,
+      "L": 0.75,
+      "V": 0.917,
+      "A": 1.0,
+      "D": 1.0,
+      "E": 1.0
+    }
+  },
+  "panel_agreement": {
+    "judgements": 84,
+    "match_consensus": 80,
+    "pooled_p_m_hat": 0.952,
+    "per_parameter": {
+      "P_OPR": {
+        "judgements": 12,
+        "match": 12,
+        "p_m_hat": 1.0
+      },
+      "P_SAF": {
+        "judgements": 12,
+        "match": 12,
+        "p_m_hat": 1.0
+      },
+      "L": {
+        "judgements": 12,
+        "match": 9,
+        "p_m_hat": 0.75
+      },
+      "V": {
+        "judgements": 12,
+        "match": 11,
+        "p_m_hat": 0.917
+      },
+      "A": {
+        "judgements": 12,
+        "match": 12,
+        "p_m_hat": 1.0
+      },
+      "D": {
+        "judgements": 12,
+        "match": 12,
+        "p_m_hat": 1.0
+      },
+      "E": {
+        "judgements": 12,
+        "match": 12,
+        "p_m_hat": 1.0
+      }
+    },
+    "pairwise_exact_agreement": {
+      "A-B": "27/28",
+      "A-C": "25/28",
+      "B-C": "24/28"
+    },
+    "unanimous_items": 24,
+    "divergent_items": 4,
+    "max_spread": 1,
+    "fleiss_kappa": 0.839,
+    "krippendorff_alpha_ordinal": 0.94,
+    "alpha_bootstrap_95": [
+      0.837,
+      0.995
+    ],
+    "alpha_bootstrap_procedure": "percentile; 10,000 resamples of the 28 cells (3 ratings of a cell kept together); seed 42"
+  },
+  "deterministic": {
+    "S1": {
+      "P_OPR": 4,
+      "P_SAF": 3,
+      "L": 3,
+      "V": 4,
+      "A": 3,
+      "D": 3,
+      "E": 4,
+      "AV": 3.46,
+      "CPPI": 7.07,
+      "rank": 4,
+      "priority_class": "Low"
+    },
+    "S2": {
+      "P_OPR": 4,
+      "P_SAF": 4,
+      "L": 3,
+      "V": 4,
+      "A": 3,
+      "D": 4,
+      "E": 5,
+      "AV": 3.94,
+      "CPPI": 9.45,
+      "rank": 1,
+      "priority_class": "Low"
+    },
+    "S3": {
+      "P_OPR": 4,
+      "P_SAF": 4,
+      "L": 3,
+      "V": 4,
+      "A": 3,
+      "D": 4,
+      "E": 4,
+      "AV": 3.72,
+      "CPPI": 8.93,
+      "rank": 2,
+      "priority_class": "Low"
+    },
+    "S4": {
+      "P_OPR": 3,
+      "P_SAF": 4,
+      "L": 3,
+      "V": 4,
+      "A": 3,
+      "D": 5,
+      "E": 3,
+      "AV": 3.66,
+      "CPPI": 7.91,
+      "rank": 3,
+      "priority_class": "Low"
+    }
+  },
+  "monte_carlo": {
+    "S1": {
+      "det": 7.07,
+      "det_rank": 4,
+      "median": 6.95,
+      "ci90": [
+        4.1,
+        10.32
+      ],
+      "class_probs": {
+        "Moderate": 0.067,
+        "Low": 0.77,
+        "Very Low": 0.163
+      },
+      "p_det_rank": 0.454,
+      "p_det_rank_fractional": 0.456
+    },
+    "S2": {
+      "det": 9.45,
+      "det_rank": 1,
+      "median": 9.24,
+      "ci90": [
+        5.63,
+        13.48
+      ],
+      "class_probs": {
+        "High": 0.014,
+        "Moderate": 0.326,
+        "Low": 0.642,
+        "Very Low": 0.018
+      },
+      "p_det_rank": 0.429,
+      "p_det_rank_fractional": 0.426
+    },
+    "S3": {
+      "det": 8.93,
+      "det_rank": 2,
+      "median": 8.79,
+      "ci90": [
+        5.3,
+        12.8
+      ],
+      "class_probs": {
+        "High": 0.006,
+        "Moderate": 0.271,
+        "Low": 0.693,
+        "Very Low": 0.03
+      },
+      "p_det_rank": 0.303,
+      "p_det_rank_fractional": 0.302
+    },
+    "S4": {
+      "det": 7.91,
+      "det_rank": 3,
+      "median": 7.66,
+      "ci90": [
+        4.64,
+        11.34
+      ],
+      "class_probs": {
+        "High": 0.001,
+        "Moderate": 0.131,
+        "Low": 0.779,
+        "Very Low": 0.09
+      },
+      "p_det_rank": 0.307,
+      "p_det_rank_fractional": 0.306
+    }
+  },
+  "rank_probability_matrix": {
+    "S1": [
+      0.08,
+      0.172,
+      0.292,
+      0.456
+    ],
+    "S2": [
+      0.426,
+      0.277,
+      0.182,
+      0.114
+    ],
+    "S3": [
+      0.334,
+      0.302,
+      0.219,
+      0.145
+    ],
+    "S4": [
+      0.16,
+      0.249,
+      0.306,
+      0.285
+    ]
+  },
+  "p_exact": 0.122,
+  "tie_statistics": {
+    "share_of_draws_with_tie": 0.0256,
+    "p_exact_tie_excluded": 0.118,
+    "rank_probability_matrix_fractional": {
+      "S1": [
+        0.08,
+        0.172,
+        0.292,
+        0.456
+      ],
+      "S2": [
+        0.426,
+        0.277,
+        0.182,
+        0.114
+      ],
+      "S3": [
+        0.334,
+        0.302,
+        0.219,
+        0.145
+      ],
+      "S4": [
+        0.16,
+        0.249,
+        0.306,
+        0.285
+      ]
+    }
+  },
+  "top_k_set_recovery": {
+    "top1": 0.429,
+    "top2": 0.384
+  },
+  "pairwise_reversal_probabilities": {
+    "S1>S2": 0.223,
+    "S3>S2": 0.444,
+    "S4>S2": 0.311,
+    "S1>S3": 0.258,
+    "S4>S3": 0.359,
+    "S1>S4": 0.389
+  },
+  "empirical_bracket": {
+    "monte_carlo": {
+      "S1": {
+        "det": 7.07,
+        "det_rank": 4,
+        "median": 7.07,
+        "ci90": [
+          4.71,
+          9.42
+        ],
+        "class_probs": {
+          "Low": 0.872,
+          "Very Low": 0.128
+        },
+        "p_det_rank": 0.629,
+        "p_det_rank_fractional": 0.629
+      },
+      "S2": {
+        "det": 9.45,
+        "det_rank": 1,
+        "median": 9.45,
+        "ci90": [
+          6.3,
+          12.6
+        ],
+        "class_probs": {
+          "Moderate": 0.126,
+          "Low": 0.874
+        },
+        "p_det_rank": 0.675,
+        "p_det_rank_fractional": 0.667
+      },
+      "S3": {
+        "det": 8.93,
+        "det_rank": 2,
+        "median": 8.93,
+        "ci90": [
+          5.96,
+          11.91
+        ],
+        "class_probs": {
+          "Moderate": 0.125,
+          "Low": 0.875
+        },
+        "p_det_rank": 0.526,
+        "p_det_rank_fractional": 0.52
+      },
+      "S4": {
+        "det": 7.91,
+        "det_rank": 3,
+        "median": 7.91,
+        "ci90": [
+          5.27,
+          10.55
+        ],
+        "class_probs": {
+          "Moderate": 0.12,
+          "Low": 0.875,
+          "Very Low": 0.006
+        },
+        "p_det_rank": 0.539,
+        "p_det_rank_fractional": 0.539
+      }
+    },
+    "p_exact": 0.437,
+    "tie_statistics": {
+      "share_of_draws_with_tie": 0.0229,
+      "p_exact_tie_excluded": 0.423,
+      "rank_probability_matrix_fractional": {
+        "S1": [
+          0.019,
+          0.112,
+          0.24,
+          0.629
+        ],
+        "S2": [
+          0.667,
+          0.192,
+          0.055,
+          0.085
+        ],
+        "S3": [
+          0.209,
+          0.52,
+          0.165,
+          0.105
+        ],
+        "S4": [
+          0.105,
+          0.175,
+          0.539,
+          0.181
+        ]
+      }
+    },
+    "top_k_set_recovery": {
+      "top1": 0.675,
+      "top2": 0.602
+    },
+    "pairwise_reversal_probabilities": {
+      "S1>S2": 0.117,
+      "S3>S2": 0.229,
+      "S4>S2": 0.202,
+      "S1>S3": 0.202,
+      "S4>S3": 0.205,
+      "S1>S4": 0.203
+    }
+  },
+  "shrunk_retention_settings": {
+    "Beta(3,2)": {
+      "p_m": {
+        "P_OPR": 0.882,
+        "P_SAF": 0.882,
+        "L": 0.706,
+        "V": 0.824,
+        "A": 0.882,
+        "D": 0.882,
+        "E": 0.882
+      },
+      "p_top_rank1": 0.511,
+      "p_exact": 0.21,
+      "min_reversal": 0.156,
+      "max_reversal": 0.377,
+      "all_pairs_flagged_tau_0_1": true,
+      "pairwise_reversal_probabilities": {
+        "S1>S2": 0.156,
+        "S3>S2": 0.377,
+        "S4>S2": 0.239,
+        "S1>S3": 0.204,
+        "S4>S3": 0.289,
+        "S1>S4": 0.306
+      }
+    },
+    "Beta(6,4)": {
+      "p_m": {
+        "P_OPR": 0.818,
+        "P_SAF": 0.818,
+        "L": 0.682,
+        "V": 0.773,
+        "A": 0.818,
+        "D": 0.818,
+        "E": 0.818
+      },
+      "p_top_rank1": 0.479,
+      "p_exact": 0.168,
+      "min_reversal": 0.173,
+      "max_reversal": 0.406,
+      "all_pairs_flagged_tau_0_1": true,
+      "pairwise_reversal_probabilities": {
+        "S1>S2": 0.173,
+        "S3>S2": 0.406,
+        "S4>S2": 0.26,
+        "S1>S3": 0.215,
+        "S4>S3": 0.317,
+        "S1>S4": 0.338
+      }
+    },
+    "Beta(12,8)": {
+      "p_m": {
+        "P_OPR": 0.75,
+        "P_SAF": 0.75,
+        "L": 0.656,
+        "V": 0.719,
+        "A": 0.75,
+        "D": 0.75,
+        "E": 0.75
+      },
+      "p_top_rank1": 0.457,
+      "p_exact": 0.143,
+      "min_reversal": 0.189,
+      "max_reversal": 0.425,
+      "all_pairs_flagged_tau_0_1": true,
+      "pairwise_reversal_probabilities": {
+        "S1>S2": 0.189,
+        "S3>S2": 0.425,
+        "S4>S2": 0.28,
+        "S1>S3": 0.229,
+        "S4>S3": 0.336,
+        "S1>S4": 0.361
+      }
+    }
+  },
+  "additive_aggregation_check": {
+    "deterministic_scores": {
+      "S1": 3.3,
+      "S2": 3.667,
+      "S3": 3.583,
+      "S4": 3.45
+    },
+    "deterministic_ranks": {
+      "S1": 4,
+      "S2": 1,
+      "S3": 2,
+      "S4": 3
+    },
+    "spearman_rho_vs_multiplicative": 1.0,
+    "kendall_tau_vs_multiplicative": 1.0,
+    "p_rank1": {
+      "S1": 0.07,
+      "S2": 0.445,
+      "S3": 0.33,
+      "S4": 0.155
+    },
+    "p_exact": 0.128,
+    "all_pairs_flagged_tau_0_1": true,
+    "same_top_scenario_share": 0.943,
+    "same_full_order_share": 0.797
+  },
+  "compound_paths": {
+    "C1=S2^S4": {
+      "common_campaign": 8.79,
+      "independent_compromise": 5.27
+    },
+    "C2=S3^S4": {
+      "common_campaign": 8.79,
+      "independent_compromise": 5.27
+    }
+  },
+  "pairs_flagged_by_tau": {
+    "0.05": 6,
+    "0.1": 6,
+    "0.2": 6
+  },
+  "boundary_rule": "mode",
+  "independent_draw_check": {
+    "p_exact": 0.122,
+    "top_k_set_recovery": {
+      "top1": 0.428,
+      "top2": 0.385
+    },
+    "pairwise_reversal_probabilities": {
+      "S1>S2": 0.223,
+      "S3>S2": 0.444,
+      "S4>S2": 0.311,
+      "S1>S3": 0.264,
+      "S4>S3": 0.36,
+      "S1>S4": 0.389
+    }
+  },
+  "convention_sensitivity_S4": {
+    "panel_split": {
+      "cpr_S4": 7.91,
+      "rank_S4": 3
+    },
+    "conjoint_elicited": {
+      "cpr_S4": 8.79,
+      "rank_S4": 3
+    },
+    "conjoint_worst_case": {
+      "cpr_S4": 10.99,
+      "rank_S4": 1
+    }
+  },
+  "weight_crossing_S1_S4": 0.4,
+  "pm_sweep": {
+    "p_m": [
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "p_exact": [
+      0.09,
+      0.093,
+      0.097,
+      0.1,
+      0.106,
+      0.11,
+      0.121,
+      0.133,
+      0.147,
+      0.172,
+      0.21,
+      0.276,
+      0.389,
+      0.594
+    ],
+    "p_exact_ties_broken_by_index": [
+      0.091,
+      0.094,
+      0.098,
+      0.101,
+      0.108,
+      0.113,
+      0.124,
+      0.139,
+      0.155,
+      0.185,
+      0.229,
+      0.303,
+      0.427,
+      0.637
+    ],
+    "share_of_draws_with_tie": [
+      0.0104,
+      0.0113,
+      0.0132,
+      0.0141,
+      0.0172,
+      0.0206,
+      0.0261,
+      0.0318,
+      0.04,
+      0.0485,
+      0.058,
+      0.0683,
+      0.0703,
+      0.0592
+    ],
+    "p_top_rank1": [
+      0.374,
+      0.379,
+      0.388,
+      0.396,
+      0.402,
+      0.411,
+      0.426,
+      0.441,
+      0.459,
+      0.485,
+      0.515,
+      0.567,
+      0.638,
+      0.763
+    ]
+  },
+  "baselines": {
+    "risk_matrix": {
+      "likelihood": {
+        "S1": 3,
+        "S2": 3,
+        "S3": 3,
+        "S4": 3
+      },
+      "impact": {
+        "S1": 4,
+        "S2": 3,
+        "S3": 4,
+        "S4": 3
+      },
+      "scores": {
+        "S1": 12,
+        "S2": 9,
+        "S3": 12,
+        "S4": 9
+      },
+      "ranks": {
+        "S1": 1,
+        "S2": 3,
+        "S3": 1,
+        "S4": 3
+      }
+    },
+    "rm_cp": {
+      "likelihood": {
+        "S1": 3,
+        "S2": 3,
+        "S3": 3,
+        "S4": 3
+      },
+      "impact_P_sev": {
+        "S1": 3.4,
+        "S2": 4.0,
+        "S3": 4.0,
+        "S4": 3.6
+      },
+      "scores": {
+        "S1": 10.2,
+        "S2": 12.0,
+        "S3": 12.0,
+        "S4": 10.8
+      },
+      "ranks": {
+        "S1": 4,
+        "S2": 1,
+        "S3": 1,
+        "S4": 3
+      }
+    },
+    "cvss": {
+      "vectors": {
+        "S1": "AV:A/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "S2": "AV:A/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+        "S3": "AV:A/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:H",
+        "S4": "AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+      },
+      "scores": {
+        "S1": 6.5,
+        "S2": 6.5,
+        "S3": 6.4,
+        "S4": 8.8
+      },
+      "ranks": {
+        "S1": 2,
+        "S2": 2,
+        "S3": 4,
+        "S4": 1
+      }
+    }
+  },
+  "tornado_top": {
+    "P_OPR": {
+      "minus": -0.94,
+      "plus": 0.94
+    },
+    "P_SAF": {
+      "minus": -1.42,
+      "plus": 1.42
+    },
+    "L": {
+      "minus": -3.15,
+      "plus": 3.15
+    },
+    "V": {
+      "minus": -0.66,
+      "plus": 0.54
+    },
+    "A": {
+      "minus": -0.91,
+      "plus": 0.7
+    },
+    "D": {
+      "minus": -0.66,
+      "plus": 0.54
+    },
+    "E": {
+      "minus": -0.51,
+      "plus": 0.0
+    }
+  }
+}
