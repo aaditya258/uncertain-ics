@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-reproduce.py -- regenerates every quantitative result, table value, and
-data-driven figure of the manuscript "Uncertainty-Aware Cyber-Physical
-Threat Prioritisation for Industrial Control Systems" (revised version,
-panel elicitation).
+reproduce_script.py -- regenerates every quantitative result, table value,
+and data-driven figure of the manuscript "Uncertainty-Aware Cyber-Physical
+Threat Prioritisation for Industrial Control Systems" and its supplement
+(three-assessor panel, L re-assessed against in-sector incident records).
 
 Usage:
-    python3 reproduce.py [--samples 100000] [--seed 42] [--p-mode 0.6|empirical]
+    python3 reproduce_script.py [--samples 100000] [--seed 42]
+                                [--p-mode 0.6|empirical] [--boundary mode|renorm]
 
 Outputs:
     outputs/results.json   all statistics referenced in the text
@@ -29,16 +30,22 @@ import matplotlib.pyplot as plt
 # --------------------------------------------------------------------------
 # Declared study inputs
 # --------------------------------------------------------------------------
-# Ordinal parameters per scenario: CONSENSUS of the three-assessor panel
-# (raw per-rater record below; elicited against the rubric, Table 4).
+# PANEL_CONSENSUS: consensus of the three-assessor panel (supplementary
+# Table S2; raw per-rater record below). Agreement statistics and the
+# agreement-derived retention values refer to this panel round.
+# SCENARIOS: scores used for every result in the paper (main Table 10):
+# the panel consensus with L re-assessed against in-sector incident records
+# (supplement, "Re-assessment of L").
 # Order: P_OPR, P_SAFETY, L, V, A, D, E.
 # A is the ATTACKABILITY scale: 5 = little skill or resources required.
-SCENARIOS = {
+PANEL_CONSENSUS = {
     "S1": dict(P_OPR=4, P_SAF=3, L=3, V=4, A=3, D=3, E=4),
     "S2": dict(P_OPR=4, P_SAF=4, L=3, V=4, A=3, D=4, E=5),
     "S3": dict(P_OPR=4, P_SAF=4, L=3, V=4, A=3, D=4, E=4),
     "S4": dict(P_OPR=3, P_SAF=4, L=3, V=4, A=3, D=5, E=3),
 }
+L_REASSESSED = {"S1": 4, "S2": 3, "S3": 5, "S4": 4}
+SCENARIOS = {sid: dict(PANEL_CONSENSUS[sid], L=L_REASSESSED[sid]) for sid in PANEL_CONSENSUS}
 ORDER = ["S1", "S2", "S3", "S4"]
 PARAM_KEYS = ["P_OPR", "P_SAF", "L", "V", "A", "D", "E"]
 W_OPR, W_SAF = 0.4, 0.6
@@ -82,11 +89,11 @@ CLASS_BINS = [  # (lower, upper, label); lower inclusive, upper exclusive
 ]
 
 # Baseline 1: IT-centric 5x5 risk matrix (STRIDE + likelihood x impact).
-# Likelihood classes = consensus L column (3,3,3,3); impact scored on
-# service/data disruption only (no HAZOP input); Sec. 5.1.
+# Likelihood classes = re-assessed L column (4,3,5,4); impact scored on
+# service/data disruption only (no HAZOP input); Sec. 4.5 / Table S6.
 BASELINE_RM_IMPACT = {"S1": 4, "S2": 3, "S3": 4, "S4": 3}
 
-# Baseline 1b: physics-aware likelihood x impact product (RM-CP), Sec. 5.1.
+# Baseline 1b: physics-aware likelihood x impact product (RM-CP), Sec. 4.5.
 # Impact = weighted HAZOP impact P_sev of Eq. (1) (continuous, hence a
 # product rather than a discrete 5x5 cell).
 def rmcp_impact(sid):
@@ -97,24 +104,13 @@ def rmcp_impact(sid):
 # (k + a) / (12 + a + b) for Beta(a, b), k = judgements equal to consensus.
 SHRINK_PRIORS = {"Beta(3,2)": (3, 2), "Beta(6,4)": (6, 4), "Beta(12,8)": (12, 8)}
 
-# Baseline 2: CVSS v3.1 base vectors (Sec. 5.1).
+# Baseline 2: CVSS v3.1 base vectors (Sec. 4.5, Table S7).
 CVSS_VECTORS = {
     "S1": "AV:A/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
     "S2": "AV:A/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
     "S3": "AV:A/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:H",
     "S4": "AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
 }
-
-# Criteria-based comparison (Sec. 5.2), six attributes, L/M/H -> 1/2/3.
-VALIDATION = {
-    "ICS-STRATA": [3, 3, 3, 3, 1, 3],
-    "SSPN-RA": [3, 3, 2, 1, 2, 2],
-    "Hybrid automaton": [3, 2, 2, 1, 3, 1],
-    "Formal analysis": [3, 1, 2, 1, 3, 2],
-    "Design-centric": [3, 3, 2, 2, 2, 2],
-    "Dynamic watermarking": [2, 1, 2, 2, 1, 1],
-}
-ATTRS = ["CPI", "RQP", "PT", "EoU", "FAD", "UR"]
 
 C_SCEN = {"S1": "#0072B2", "S2": "#009E73", "S3": "#E69F00", "S4": "#D55E00"}
 plt.rcParams.update(
@@ -136,7 +132,7 @@ def agreement_stats():
     for sid in ORDER:
         for k in range(7):
             items.append([RATERS[r][sid][k] for r in ("A", "B", "C")])
-            cons.append(SCENARIOS[sid][PARAM_KEYS[k]])
+            cons.append(PANEL_CONSENSUS[sid][PARAM_KEYS[k]])
     items = np.array(items)  # 28 x 3
     cons = np.array(cons)
     n_items, n_raters = items.shape
@@ -302,7 +298,7 @@ def run_mc(pm_map, N, seed, shared=True):
 
 
 def additive_draws(X):
-    """Monotone additive rule of Sec. 5.2: equal-weight mean of L, P_sev and
+    """Monotone additive rule of Sec. 5.4: equal-weight mean of L, P_sev and
     the arithmetic mean of (V, A, D, E), each on the 1-5 scale."""
     S = len(ORDER)
     N = len(next(iter(X[ORDER[0]].values())))
@@ -504,7 +500,13 @@ def fig_convergence(draws, ranks, detr, top_idx, top_sid, path):
     N = draws.shape[0]
     n = np.arange(1, N + 1)
     top = np.cumsum(ranks[:, top_idx] == 1) / n
-    exact = np.cumsum((ranks == detr[None, :]).all(axis=1)) / n
+    S = draws.shape[1]
+    ok = np.ones(N, dtype=bool)
+    for a in range(S):
+        gt = sum(draws[:, b] > draws[:, a] for b in range(S) if b != a)
+        tie = sum(draws[:, b] == draws[:, a] for b in range(S) if b != a)
+        ok &= (gt == detr[a] - 1) & (tie == 0)
+    exact = np.cumsum(ok) / n
     fig, ax = plt.subplots(figsize=(5.2, 2.8))
     sl = slice(99, N, 100)
     for series, lab, col in [
@@ -524,32 +526,6 @@ def fig_convergence(draws, ranks, detr, top_idx, top_sid, path):
     plt.close(fig)
 
 
-def fig_spider(path):
-    K = len(ATTRS)
-    ang = np.linspace(0, 2 * np.pi, K, endpoint=False).tolist() + [0]
-    fig, ax = plt.subplots(figsize=(4.6, 4.8), subplot_kw=dict(polar=True))
-    fig.subplots_adjust(top=0.92, bottom=0.24, left=0.12, right=0.88)
-    styles = {
-        "ICS-STRATA": dict(color="#D55E00", lw=2.2, zorder=5),
-        "SSPN-RA": dict(color="#0072B2", lw=1.1),
-        "Hybrid automaton": dict(color="#009E73", lw=1.1),
-        "Formal analysis": dict(color="#CC79A7", lw=1.1),
-        "Design-centric": dict(color="#E69F00", lw=1.1),
-        "Dynamic watermarking": dict(color="#56B4E9", lw=1.1),
-    }
-    for m, sc in VALIDATION.items():
-        vals = [v / 3 * 100 for v in sc] + [sc[0] / 3 * 100]
-        ax.plot(ang, vals, label=m, **styles[m])
-    ax.set_xticks(ang[:-1], ATTRS)
-    ax.tick_params(pad=8)
-    ax.set_yticks([33.3, 66.7, 100], ["L", "M", "H"])
-    ax.set_ylim(0, 100)
-    fig.legend(loc="lower center", ncol=2, frameon=False, fontsize=7.5,
-               handlelength=1.8, columnspacing=1.4, bbox_to_anchor=(0.5, 0.01))
-    fig.savefig(path, bbox_inches="tight", pad_inches=0.05)
-    plt.close(fig)
-
-
 def fig_weights(path):
     ws = np.linspace(0, 1, 101)
     fig, ax = plt.subplots(figsize=(4.8, 2.8))
@@ -562,8 +538,9 @@ def fig_weights(path):
     ax.text(W_SAF + 0.01, 1.0, "default $w_{saf}=0.6$", fontsize=7, color="grey")
     ax.set_xlabel(r"safety weight $w_{saf}$  ($w_{opr}=1-w_{saf}$)")
     ax.set_ylabel("CPPI")
-    ax.legend(frameon=False, fontsize=8, ncol=4, loc="upper center")
-    ax.set_ylim(0, 15)
+    ax.legend(frameon=False, fontsize=8, ncol=4, loc="lower center",
+              bbox_to_anchor=(0.5, 1.0))
+    ax.set_ylim(0, 16)
     fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
@@ -616,7 +593,7 @@ def main():
     stats, R, p_exact, topk, reversals, _, ties = mc_statistics(draws, ranks, det_scores)
     X_primary = run_mc.last_X
 
-    # --- additive aggregation check (same draws), Sec. 5.2
+    # --- additive aggregation check (same draws), Sec. 5.4
     add_det = additive_draws({sid: {k: np.array([SCENARIOS[sid][k]], float)
                                     for k in PARAM_KEYS} for sid in ORDER})[0]
     add_draws = additive_draws(X_primary)
@@ -640,14 +617,14 @@ def main():
         deterministic_ranks={sid: int(add_detr[j]) for j, sid in enumerate(ORDER)},
         spearman_rho_vs_multiplicative=round(float(spearman(add_detr, detr)), 3),
         kendall_tau_vs_multiplicative=round(float(kendall(add_detr, detr)), 3),
-        p_rank1={sid: add_stats[sid]["p_det_rank_fractional"] if add_detr[j] == 1 else round(float(add_R[j, 0]), 3)
-                 for j, sid in enumerate(ORDER)},
+        p_rank1={sid: round(float(add_R[j, 0]), 3) for j, sid in enumerate(ORDER)},
+        pairwise_reversal_probabilities=add_rev,
         p_exact=add_ties["p_exact_tie_excluded"],
         all_pairs_flagged_tau_0_1=bool(all(v > 0.1 for v in add_rev.values())),
         same_top_scenario_share=round(same_top, 3),
         same_full_order_share=round(same_order, 3))
 
-    # --- compound conjunctive paths C1 = S2^S4, C2 = S3^S4 (Sec. 5.2)
+    # --- compound conjunctive paths C1 = S2^S4, C2 = S3^S4 (Sec. 5.4, supplement S4)
     def path_index(init, l_rule):
         a = min(av(*[SCENARIOS[init][k] for k in ("V", "A", "D", "E")]),
                 av(*[SCENARIOS["S4"][k] for k in ("V", "A", "D", "E")]))
@@ -662,7 +639,7 @@ def main():
     tau_sweep = {str(t): int(sum(v > t for v in reversals.values())) for t in (0.05, 0.10, 0.20)}
 
     # empirical (optimistic) bracket run
-    draws_e, ranks_e = run_mc(pm_emp, args.samples, args.seed + 777, shared=True)
+    draws_e, ranks_e = run_mc(pm_emp, args.samples, args.seed, shared=True)
     stats_e, R_e, p_exact_e, topk_e, reversals_e, _, ties_e = mc_statistics(
         draws_e, ranks_e, det_scores)
 
@@ -688,11 +665,12 @@ def main():
 
     # p_m sweep
     pm_grid = np.round(np.arange(0.3, 0.96, 0.05), 2)
-    pm_exact, pm_top, pm_exact_argsort, pm_tieshare = [], [], [], []
-    for i, pm in enumerate(pm_grid):
+    pm_exact, pm_top, pm_exact_argsort, pm_tieshare, pm_rev = [], [], [], [], []
+    for pm in pm_grid:
         d, r = run_mc({k: float(pm) for k in PARAM_KEYS},
-                      args.samples, args.seed + 1 + i, shared=True)
-        st_p, _, pe_p, _, _, _, ti_p = mc_statistics(d, r, det_scores)
+                      args.samples, args.seed, shared=True)
+        st_p, _, pe_p, _, rv_p, _, ti_p = mc_statistics(d, r, det_scores)
+        pm_rev.append(rv_p)
         pm_exact.append(ti_p["p_exact_tie_excluded"])      # tie rule of Alg. 2
         pm_exact_argsort.append(float(pe_p))               # ties broken by index order
         pm_tieshare.append(ti_p["share_of_draws_with_tie"])
@@ -707,21 +685,33 @@ def main():
         conv[lab] = dict(cpr_S4=round(cpr(p), 2),
                          rank_S4=int(det_ranks(sc)[ORDER.index("S4")]))
 
-    # weight sweep crossing (S1 vs S4)
-    a1, a4 = av(4, 3, 3, 4), av(4, 3, 5, 3)
-    w_cross = round((4 * a1 - 3 * a4) / (a1 + a4), 2)
+    # weight-sweep crossings for every pair (Fig. S2): CPPI is linear in w_saf
+    def lin(sid):
+        p = SCENARIOS[sid]
+        k = (p["L"] / 5.0) * av(p["V"], p["A"], p["D"], p["E"])
+        return k * p["P_OPR"], k * (p["P_SAF"] - p["P_OPR"])  # intercept, slope
+    w_cross = {}
+    for i, a in enumerate(ORDER):
+        for b in ORDER[i + 1:]:
+            (c1, m1), (c2, m2) = lin(a), lin(b)
+            w = (c2 - c1) / (m1 - m2) if m1 != m2 else None
+            w_cross[f"{a}-{b}"] = round(w, 3) if w is not None and 0 <= w <= 1 else None
 
     rm_scores = [SCENARIOS[sid]["L"] * BASELINE_RM_IMPACT[sid] for sid in ORDER]
     rmcp_scores = [round(SCENARIOS[sid]["L"] * rmcp_impact(sid), 2) for sid in ORDER]
     cvss_scores = [cvss31_base(CVSS_VECTORS[sid]) for sid in ORDER]
 
-    fig_method_comparison(det_scores, stats, rm_scores, rmcp_scores, cvss_scores,
+    if BOUNDARY != "mode":  # robustness run: write results only, keep the paper's figures
+        out = f"outputs/results_boundary_{BOUNDARY}.json"
+    else:
+        out = "outputs/results.json"
+    if BOUNDARY == "mode":
+        fig_method_comparison(det_scores, stats, rm_scores, rmcp_scores, cvss_scores,
                           "figures/fig_method_comparison.pdf")
-    fig_rankprob(R, detr, "figures/fig_rankprob.pdf")
-    fig_sensitivity(top_sid, pm_grid, pm_exact, pm_top, "figures/fig_sensitivity.pdf")
-    fig_convergence(draws, ranks, detr, top_idx, top_sid, "figures/fig_convergence.pdf")
-    # fig_spider("figures/fig_spider.pdf")  # criteria comparison removed from the paper
-    fig_weights("figures/fig_weights.pdf")
+        fig_rankprob(R, detr, "figures/fig_rankprob.pdf")
+        fig_sensitivity(top_sid, pm_grid, pm_exact, pm_top, "figures/fig_sensitivity.pdf")
+        fig_convergence(draws, ranks, detr, top_idx, top_sid, "figures/fig_convergence.pdf")
+        fig_weights("figures/fig_weights.pdf")
 
     results = dict(
         settings=dict(N=args.samples, seed=args.seed, p_mode=args.p_mode,
@@ -733,12 +723,13 @@ def main():
         monte_carlo=stats,
         rank_probability_matrix={ORDER[i]: [round(float(x), 3) for x in R[i]]
                                  for i in range(len(ORDER))},
-        p_exact=round(p_exact, 3),
+        p_exact=ties["p_exact_tie_excluded"],
+        p_exact_ties_broken_by_index=round(p_exact, 3),
         tie_statistics=ties,
         top_k_set_recovery=topk,
         pairwise_reversal_probabilities=reversals,
         empirical_bracket=dict(
-            monte_carlo=stats_e, p_exact=round(p_exact_e, 3),
+            monte_carlo=stats_e, p_exact=ties_e["p_exact_tie_excluded"],
             tie_statistics=ties_e,
             top_k_set_recovery=topk_e,
             pairwise_reversal_probabilities=reversals_e),
@@ -751,12 +742,13 @@ def main():
             p_exact=round(p_exact_i, 3), top_k_set_recovery=topk_i,
             pairwise_reversal_probabilities=reversals_i),
         convention_sensitivity_S4=conv,
-        weight_crossing_S1_S4=w_cross,
+        weight_crossings=w_cross,
         pm_sweep=dict(p_m=[float(x) for x in pm_grid],
                       p_exact=[round(x, 3) for x in pm_exact],
                       p_exact_ties_broken_by_index=[round(x, 3) for x in pm_exact_argsort],
                       share_of_draws_with_tie=[round(x, 4) for x in pm_tieshare],
-                      p_top_rank1=[round(x, 3) for x in pm_top]),
+                      p_top_rank1=[round(x, 3) for x in pm_top],
+                      pairwise_reversal_probabilities=pm_rev),
         baselines=dict(
             risk_matrix=dict(
                 likelihood={sid: SCENARIOS[sid]["L"] for sid in ORDER},
@@ -800,7 +792,7 @@ def main():
         np.argsort(-big, axis=1, kind="stable")
         results["scale_benchmark"] = dict(scenarios=S_big, samples=args.samples,
                                           seconds=round(time.perf_counter() - t0, 1))
-    with open("outputs/results.json", "w") as fh:
+    with open(out, "w") as fh:
         json.dump(results, fh, indent=2)
     print(json.dumps(results, indent=2))
 
